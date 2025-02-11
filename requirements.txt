@@ -1,0 +1,6 @@
+requests
+python-dotenv
+qrcode[pil]
+pyzbar
+flask
+flask_cors

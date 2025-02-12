@@ -20,8 +20,8 @@ def get_user_by_id(user_id):
     user_data = response.json()
     return user_data[0] if user_data else None
 
-def get_user_by_email_and_name(first_name, last_name, email):
-    url = f"{SUPABASE_URL}/rest/v1/users?email=eq.{email}&first_name=eq.{first_name}&last_name=eq.{last_name}"
+def get_user_by_email(email):
+    url = f"{SUPABASE_URL}/rest/v1/users?email=eq.{email}"
     response = requests.get(url, headers=HEADERS)
     user_data = response.json()
     return user_data[0] if user_data else None

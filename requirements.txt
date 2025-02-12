@@ -4,3 +4,4 @@ qrcode[pil]
 pyzbar
 flask
 flask_cors
+supabase

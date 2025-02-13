@@ -5,3 +5,4 @@ pyzbar
 flask
 flask_cors
 supabase
+MailboxValidator

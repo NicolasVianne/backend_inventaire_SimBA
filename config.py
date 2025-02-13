@@ -23,3 +23,6 @@ HEADERS = {
     "Content-Type": "application/json",
     "Prefer": "return=representation"
 }
+
+ABSTRACT_KEY = "4e4e89d16f334069a8590fe1efa177da"
+MBV_KEY = "FC2WX3MMZQJAVP3PC89N"

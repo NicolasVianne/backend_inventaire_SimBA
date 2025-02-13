@@ -6,7 +6,8 @@ Created on Thu Feb  6 14:42:52 2025
 """
 
 import requests
-from config import SUPABASE_URL, HEADERS
+from config import SUPABASE_URL, HEADERS, ABSTRACT_KEY, MBV_KEY
+import MailboxValidator
 
 def get_all_users():
     url = f"{SUPABASE_URL}/rest/v1/users"
@@ -25,6 +26,51 @@ def get_user_by_email(email):
     response = requests.get(url, headers=HEADERS)
     user_data = response.json()
     return user_data[0] if user_data else None
+
+def validate_email_with_api(email: str) -> bool:
+    """
+    Valide l'email en utilisant une API tierce (exemple : Abstract API).
+    Retourne True si l'email est valide et existe, sinon False.
+    """
+    # api_key = ABSTRACT_KEY
+    # url = f"https://emailvalidation.abstractapi.com/v1/?api_key={api_key}&email={email}"
+    
+    mbv = MailboxValidator.EmailValidation(MBV_KEY)
+
+    try:
+        # response = requests.get(url)
+        # response_data = response.json()
+
+        # # Vérifie si l'email est valide et existe
+        # if response_data.get("deliverability") == "DELIVERABLE":
+        #     return True
+        # else:
+        #     return False
+        
+        results  = mbv.validate_email(email)
+        
+        if results is None:
+            print("Erreur de connexion à l'API.")
+            return False
+        
+        if 'error_code' in results and results['error_code'] != '':
+            print(f"Erreur API ({results['error_code']}): {results['error_message']}")
+            return False
+        
+        # Vérification des critères pour un email "livrable"
+        if (results['is_syntax'] and
+            results['is_domain'] and
+            results['is_smtp'] and
+            results['is_verified'] and
+            not results['is_server_down'] and 
+            not results['is_disposable']):
+            return True
+        else:
+            return False
+        
+    except Exception as e:
+        print(f"Erreur lors de la validation de l'email : {e}")
+        return False
 
 def create_user(data):
     url = f"{SUPABASE_URL}/rest/v1/users"

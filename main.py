@@ -76,6 +76,10 @@ def register_user():
 
         if not all([email, first_name, last_name]):
             return jsonify({"success": False, "message": "Données incomplètes."}), 400
+        
+        # Vérifie si l'email est valide et existe
+        if not api.users.validate_email_with_api(email):
+            return jsonify({"success": False, "message": "L'adresse email n'est pas valide ou n'existe pas."}), 400
 
         # Vérifie si l'email existe déjà dans la table users
         user = api.users.get_user_by_email(email)

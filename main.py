@@ -77,14 +77,14 @@ def register_user():
         if not all([email, first_name, last_name]):
             return jsonify({"success": False, "message": "Données incomplètes."}), 400
         
-        # Vérifie si l'email est valide et existe
-        if not api.users.validate_email_with_api(email):
-            return jsonify({"success": False, "message": "L'adresse email n'est pas valide ou n'existe pas."}), 400
-
         # Vérifie si l'email existe déjà dans la table users
         user = api.users.get_user_by_email(email)
         if user:
             return jsonify({"success": False, "message": "Cet email est déjà enregistré."}), 400
+        
+        # Vérifie si l'email est valide et existe
+        if not api.users.validate_email_with_api(email):
+            return jsonify({"success": False, "message": "L'adresse email n'est pas valide ou n'existe pas."}), 400
 
         # Enregistre l'utilisateur dans Supabase Auth via l'API REST
         auth_url = f"{SUPABASE_URL}/auth/v1/signup"  # URL de l'API d'authentification de Supabase

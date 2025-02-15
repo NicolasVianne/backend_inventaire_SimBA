@@ -35,7 +35,8 @@ def get_item(item_id):
         return jsonify({
             "success": True,
             "name": item.get("name"),
-            "location": item.get("location")
+            "location": item.get("location"),
+            "quantity": item.get("quantity")
         })
     
     except Exception as e:

@@ -12,7 +12,7 @@ import api.users
 import api.transactions
 import api.categories
 from flask_cors import CORS
-from config import SUPABASE_URL, HEADERS
+from config import SUPABASE_URL, HEADERS_SECRET, PASSWORD
 
 app = Flask(__name__)
 CORS(app)
@@ -91,7 +91,7 @@ def register_user():
         auth_url = f"{SUPABASE_URL}/auth/v1/signup"  # URL de l'API d'authentification de Supabase
         payload = {
             "email": email,
-            "password": "your-default-password",  # Pas besoin de mot de passe pour l'authentification par email
+            "password": PASSWORD,  # Pas besoin de mot de passe pour l'authentification par email
             "data": {  # Données supplémentaires à stocker dans le JWT
                 "first_name": first_name,
                 "last_name": last_name,
@@ -99,7 +99,7 @@ def register_user():
         }
 
         # Envoie la requête à l'API Supabase
-        response = requests.post(auth_url, headers=HEADERS, json=payload)
+        response = requests.post(auth_url, headers=HEADERS_SECRET, json=payload)
         response_data = response.json()
 
         # Vérifie si la requête a réussi
@@ -128,16 +128,12 @@ def handle_transaction():
         data = request.get_json()
         
         item_id = data.get("id")
-        first_name = data.get("first_name")
-        last_name = data.get("last_name")
         email = data.get("email")
-        item_name = data.get("name")
-        room = data.get("location")
         quantity = data.get("quantity")
         action = data.get("action")  # "add", "remove", "borrow", "return"
 
         # Vérification des données reçues
-        if not all([item_id, first_name, last_name, email, item_name, quantity, action]):
+        if not all([item_id, email, quantity, action]):
             return jsonify({"success": False, "message": "Données incomplètes."}), 400
 
         # Étape 2 : Trouver l'utilisateur par email, prénom et nom
@@ -152,6 +148,7 @@ def handle_transaction():
             "item_id": item_id,
             "type": action,
             "quantity": quantity,
+            "email": email
         }
 
         # Étape 5 : Créer la transaction en utilisant `create_transaction`
@@ -166,7 +163,6 @@ def handle_transaction():
     except Exception as e:
         # Gérer les erreurs inattendues
         return jsonify({"success": False, "message": str(e)}), 500
-
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True, use_reloader=False)

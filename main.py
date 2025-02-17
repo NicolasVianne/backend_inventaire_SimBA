@@ -164,5 +164,5 @@ def handle_transaction():
         # Gérer les erreurs inattendues
         return jsonify({"success": False, "message": str(e)}), 500
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True, use_reloader=False)
+# if __name__ == "__main__":
+#     app.run(port=5000, debug=True, use_reloader=False)
